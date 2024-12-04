@@ -14,8 +14,7 @@ dp = Dispatcher()
 @dp.message(Command("get"))
 async def fetch_messages(message: Message):
     async with ClientSession() as session:
-        async with session.get(
-                'http://fastapi-app:8000/api/v1/messages') as resp:
+        async with session.get("http://fastapi-app:8000/api/v1/messages") as resp:
             data = await resp.json()
             if not data:
                 await message.answer("Сообщений пока нет.")
@@ -26,7 +25,7 @@ async def fetch_messages(message: Message):
                     )
 
 
-@dp.message(Command('add'))
+@dp.message(Command("add"))
 async def create_message(message: Message):
     parts = message.text.split(" ", 1)
     if len(parts) < 2:
@@ -35,14 +34,12 @@ async def create_message(message: Message):
     content = parts[1]
     async with ClientSession() as session:
         payload = {
-            "author": str(
-                message.from_user.username or "Anonymous"
-            ),
-            "content": content
+            "author": str(message.from_user.username or "Anonymous"),
+            "content": content,
         }
         async with session.post(
-            "http://fastapi-app:8000/api/v1/message",
-                json=payload) as response:
+            "http://fastapi-app:8000/api/v1/message", json=payload
+        ) as response:
             if response.status == 200:
                 data = await response.json()
                 await message.answer(f"Сообщение сохранено: {data['content']}")

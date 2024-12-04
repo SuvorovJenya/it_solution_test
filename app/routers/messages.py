@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/api/v1/messages", response_model=list[MessageResponse])
 async def get_message():
-    cached_data = await redis_client.get('messages_cache')
+    cached_data = await redis_client.get("messages_cache")
     if cached_data:
         return json.loads(cached_data)
     messages = await collection.find().to_list(100)
@@ -20,7 +20,7 @@ async def get_message():
         }
         for msg in messages
     ]
-    await redis_client.set('messages_cache', json.dumps(result))
+    await redis_client.set("messages_cache", json.dumps(result))
     return result
 
 
